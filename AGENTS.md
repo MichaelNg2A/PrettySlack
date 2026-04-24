@@ -41,3 +41,8 @@ If a private cross-repository context repo is available in the workspace at `/wo
 - Do not silently update `docs/PROJECT_MEMORY.md`, `docs/CURRENT_STATE.md`, or `docs/DECISIONS.md` with durable conclusions unless the user asked for the update or confirmed it.
 - Mechanical or clearly requested factual updates are fine.
 - If a useful memory update is identified during work, propose it explicitly instead of assuming it should be written.
+
+## Session Closeout
+
+- Near the end of substantial work, review whether `docs/CURRENT_STATE.md`, `docs/PROJECT_MEMORY.md`, or `docs/DECISIONS.md` should be refreshed.
+- Prefer surfacing suggested updates as part of normal closeout so the user does not have to remember to ask.

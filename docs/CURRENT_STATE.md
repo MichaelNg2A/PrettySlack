@@ -4,18 +4,20 @@ This file tracks the current working state of the project.
 
 ## Current Focus
 
-- Establish a durable memory framework for Codex/Codespaces usage.
-- Separate project memory from personal cross-project context.
+- Use the shared `Operator_Context` pattern while continuing normal PrettySlack project work.
+- Keep project-local memory separate from personal cross-project context.
 
 ## Recent Changes
 
 - Added the ChatGPT VS Code extension to the devcontainer configuration.
 - Added `AGENTS.md` and project memory docs to support continuity across sessions.
+- Added Codespaces access to the private `Operator_Context` repository.
+- Added explicit memory update policy and session-closeout guidance to `AGENTS.md`.
 
 ## Next Steps
 
-- Scaffold the private `Operator_Context` repository.
-- Review the first version of the private context files and how they should be maintained.
+- Continue PrettySlack-specific work using the shared memory structure now in place.
+- Refresh project-memory files as PrettySlack architecture and status evolve.
 
 ## Open Questions
 
