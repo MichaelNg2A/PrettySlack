@@ -20,6 +20,16 @@
     },
 	// Configure tool-specific properties.
 	"customizations": {
+		// Configure Codespaces-specific behavior here, including access to additional repositories.
+		"codespaces": {
+			"repositories": {
+				"MichaelNg2A/Operator_Context": {
+					"permissions": {
+						"contents": "write"
+					}
+				}
+			}
+		},
 		// Configure properties specific to VS Code.
 		"vscode": {
 			"extensions": [
