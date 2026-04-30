@@ -1,0 +1,24 @@
+{
+  "workflow_id": "wf_20260430_cn25_why",
+  "status": "ready_for_payload",
+  "step": "build_payload",
+  "mode": "both",
+  "answers": {
+    "slug": "CN25_Why",
+    "base_target_url": "https://cng.bio/Alaska2026/",
+    "name": "CN25 Why",
+    "description": "Celebrity cruise night Top 10 flyer",
+    "redirect_type": "307",
+    "track_me": true,
+    "nofollow": false,
+    "sponsored": false,
+    "param_forwarding": false,
+    "utm_source": "Celebrity_CruiseNight_20250917",
+    "utm_medium": "event",
+    "utm_campaign": "TA_Top10_Flyer",
+    "utm_content": "Flyer"
+  },
+  "created_at": "2026-04-30T00:00:00Z",
+  "updated_at": "2026-04-30T00:05:00Z",
+  "expires_at": 1770077100
+}
