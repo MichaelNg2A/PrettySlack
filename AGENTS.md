@@ -2,6 +2,8 @@
 
 This repository uses `AGENTS.md` as the entrypoint for project guidance.
 
+For human readers, [AGENTS_Readme.md](AGENTS_Readme.md) explains the purpose and structure of this file and the related memory documents. AI-enhanced SDLC tools do not need to follow that file as an instruction source.
+
 ## Start Here
 
 At the beginning of a new session, review these files if they exist:

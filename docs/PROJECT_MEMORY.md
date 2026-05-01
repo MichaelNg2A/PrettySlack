@@ -49,7 +49,11 @@ This file stores durable, project-specific context that should survive across se
 - `utm_term` is intentionally used for access method in this project, even though that is non-standard compared with keyword usage.
   - Accepted v1 values: `URL`, `QR`.
 - Recent-value memory is desirable for fields that are often reused but not globally standardized, especially `utm_source` and `utm_campaign`.
-- RDS is likely overkill for recent-value memory. A small JSON document in local fixtures for early development and S3 for Lambda deployments is the preferred lightweight direction.
+- RDS is likely overkill for PrettySlack state. DynamoDB is the preferred v1 state store for Slack workflow/session state and durable PrettySlack link records because it is AWS-native, inexpensive at expected scale, and less fragile than shared JSON state in S3.
+- S3 is the preferred storage location for generated QR code image artifacts. DynamoDB records should store S3 bucket/key metadata rather than binary QR image data.
+- PrettySlack workflow/link state is documented in `docs/WORKFLOW_STATE.md`.
+- Workflow state uses `mode` for the requested variants (`typed`, `qr`, or `both`). Durable link records represent one actual PrettyLink and use `access_method` (`URL` or `QR`).
+- PrettySlack mirrors PrettyLinks field names where useful, but containers such as `link`, `payload`, and `qr_code` are PrettySlack-owned.
 
 ## Environment Notes
 

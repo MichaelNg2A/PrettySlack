@@ -16,3 +16,13 @@ This file records notable project decisions and why they were made.
 
 - Decision: Use `Operator_Context` as the private cross-project context repository name.
 - Why: The name is explicit, durable, and better aligned with long-term working context than a generic name like `LLM`.
+
+## 2026-04-30 - Use DynamoDB for PrettySlack workflow and link state
+
+- Decision: Use DynamoDB as the preferred v1 state store for Slack workflow/session state and durable PrettySlack link records.
+- Why: Lambda is stateless, and PrettySlack needs small durable state records between Slack interactions. DynamoDB is AWS-native, inexpensive at expected scale, supports key-based workflow records cleanly, and is less fragile than maintaining shared JSON state documents in S3.
+
+## 2026-04-30 - Store QR image artifacts in S3
+
+- Decision: Store generated QR code image files in S3 and store only S3 bucket/key metadata in PrettySlack link records.
+- Why: QR images are generated artifacts, not workflow fields. Keeping binary/image data out of DynamoDB keeps records small and makes SVG/PNG/JPEG outputs easier to manage.

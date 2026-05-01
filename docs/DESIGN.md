@@ -143,7 +143,8 @@ RDS is not justified for the first version.
 Preferred persistence direction:
 
 - v0.5: local JSON fixtures for recent-value behavior and tests.
-- v1.0: a small JSON state document in S3 for recent values and lightweight configuration.
+- v1.0: DynamoDB for Slack workflow/session state and durable PrettySlack link records.
+- v1.0: S3 for generated QR code image artifacts, with DynamoDB storing object pointers.
 
 Likely recent-value fields:
 

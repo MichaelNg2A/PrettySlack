@@ -1,23 +1,30 @@
-# PrettySlack Workflow State
+# PrettySlack Workflow And Link State
 
-This document describes the expected shape of a completed PrettySlack workflow item before it is converted into PrettyLinks payloads.
+This document describes two related PrettySlack data shapes:
 
-The first implementation should treat this as an application-level contract, not a DynamoDB-enforced schema. DynamoDB will store the workflow as an item with typed attributes, and `boto3` will hand Lambda code a Python dictionary with this general shape.
+- workflow state: temporary state while Slack is collecting or reviewing a request
+- link record: durable PrettySlack state after an individual PrettyLink has been created
 
-## Purpose
+These are application-level contracts, not DynamoDB-enforced schemas. DynamoDB stores typed attributes, and `boto3` will hand Lambda code Python dictionary-like data with these shapes.
 
-PrettySlack collects link details through a guided workflow. Once the required answers are present, the link builder should read the workflow state and produce one or more PrettyLinks-ready payloads.
+## Naming Decisions
 
-The workflow state should use PrettyLinks field names where the concepts map directly. PrettySlack-specific names should be used only where PrettySlack has an intermediate concept that PrettyLinks does not.
+The field names below are PrettySlack field names. PrettySlack should mirror PrettyLinks names where the concepts map directly, but several containers and workflow fields are PrettySlack-owned.
 
-## Key Naming Decision
-
-- `base_target_url`: the landing page URL before UTM parameters are added.
 - `target_url`: the final PrettyLinks redirect target after PrettySlack adds UTM parameters.
+- `base_target_url`: the landing page URL before UTM parameters are added.
+- `payload`: PrettySlack-owned UTM data used to generate `target_url`.
+- `link`: PrettySlack-owned container for the link fields PrettySlack collects or stores.
+- `mode`: workflow-level creation request: `typed`, `qr`, or `both`.
+- `access_method`: single-link record value: `URL` or `QR`.
 
-PrettyLinks should only receive `target_url`. PrettySlack uses `base_target_url` while generating typed URL and QR variants.
+`mode` belongs to a workflow request. A durable link record should represent one actual PrettyLink, so it uses `access_method` instead.
 
-## Expected Shape
+## Workflow State
+
+Workflow state is used while PrettySlack is still collecting fields, generating link output, or waiting for approval.
+
+Workflow state is pre-variant. It should usually contain the base slug and shared request fields, not the final QR slug, `target_url`, generated `utm_term`, or QR artifact details. Those belong to generated payloads or durable link records.
 
 ```json
 {
@@ -25,16 +32,14 @@ PrettyLinks should only receive `target_url`. PrettySlack uses `base_target_url`
   "status": "ready_for_payload",
   "step": "build_payload",
   "mode": "both",
-  "answers": {
+  "link": {
     "slug": "CN25_Why",
     "base_target_url": "https://cng.bio/Alaska2026/",
     "name": "CN25 Why",
     "description": "Celebrity cruise night Top 10 flyer",
-    "redirect_type": "307",
-    "track_me": true,
-    "nofollow": false,
-    "sponsored": false,
-    "param_forwarding": false,
+    "redirect_type": "307"
+  },
+  "payload": {
     "utm_source": "Celebrity_CruiseNight_20250917",
     "utm_medium": "event",
     "utm_campaign": "TA_Top10_Flyer",
@@ -46,7 +51,7 @@ PrettyLinks should only receive `target_url`. PrettySlack uses `base_target_url`
 }
 ```
 
-## Top-Level Fields
+### Workflow Fields
 
 - `workflow_id`: unique identifier for the Slack-guided workflow.
 - `status`: lifecycle state for the workflow. For payload generation, the expected value is currently `ready_for_payload`.
@@ -55,40 +60,86 @@ PrettyLinks should only receive `target_url`. PrettySlack uses `base_target_url`
   - `typed`: typed URL variant only.
   - `qr`: QR variant only.
   - `both`: typed URL and QR variants.
-- `answers`: collected fields used to generate PrettyLinks payloads.
+- `link`: collected link fields used to generate PrettyLinks payloads.
+- `payload`: UTM fields used to generate PrettyLinks `target_url` values.
 - `created_at`: ISO 8601 timestamp for workflow creation.
 - `updated_at`: ISO 8601 timestamp for the last workflow update.
-- `expires_at`: Unix timestamp used for DynamoDB TTL cleanup.
+- `expires_at`: Unix timestamp used for DynamoDB TTL cleanup of temporary workflow state.
 
-## Answer Fields
+## Link Record
 
-These fields are expected inside `answers`.
+A link record is PrettySlack's durable record of one individual PrettyLink after creation. A typed URL and QR pair should become two link records, not one `both` record.
 
-- `slug`: base PrettyLink slug. QR variants append `_QR`.
-- `base_target_url`: landing page URL before UTM parameters are added.
-- `name`: PrettyLinks display name.
-- `description`: PrettyLinks description.
-- `redirect_type`: PrettyLinks redirect type, expected to be configurable. Initial examples use `307`.
-- `track_me`: whether PrettyLinks tracking should be enabled.
-- `nofollow`: whether the link should be marked nofollow.
-- `sponsored`: whether the link should be marked sponsored.
-- `param_forwarding`: whether PrettyLinks parameter forwarding should be enabled.
-- `utm_source`: where the traffic came from.
-- `utm_medium`: broad channel or context.
-- `utm_campaign`: message, material theme, or campaign bucket.
-- `utm_content`: format or placement context.
+```json
+{
+  "link_id": "psl_20260430_cn25_why_url",
+  "workflow_id": "wf_20260430_cn25_why",
+  "status": "created",
+  "access_method": "URL",
+  "link": {
+    "slug": "CN25_Why",
+    "base_target_url": "https://cng.bio/Alaska2026/",
+    "target_url": "https://cng.bio/Alaska2026/?utm_source=Celebrity_CruiseNight_20250917&utm_medium=event&utm_campaign=TA_Top10_Flyer&utm_term=URL&utm_content=Flyer",
+    "name": "CN25 Why",
+    "description": "Celebrity cruise night Top 10 flyer",
+    "redirect_type": "307"
+  },
+  "payload": {
+    "utm_source": "Celebrity_CruiseNight_20250917",
+    "utm_medium": "event",
+    "utm_campaign": "TA_Top10_Flyer",
+    "utm_term": "URL",
+    "utm_content": "Flyer"
+  },
+  "created_at": "2026-04-30T00:05:00Z",
+  "updated_at": "2026-04-30T00:05:00Z",
+  "deleted_at": null
+}
+```
 
-PrettySlack generates `utm_term` from the selected variant:
+### Link Record Fields
 
-- typed URL variant: `utm_term=URL`
-- QR variant: `utm_term=QR`
+- `link_id`: PrettySlack-owned durable record identifier. This is not intended to be a PrettyLinks database ID.
+- `workflow_id`: source workflow that produced the link record.
+- `status`: PrettySlack-side lifecycle state, such as `created`, `updated`, or `deleted`.
+- `access_method`: access method for this individual link record: `URL` or `QR`.
+- `link`: PrettyLinks-aligned fields plus `base_target_url`.
+- `payload`: UTM data used to generate the final `target_url`, including generated `utm_term`.
+- `qr_code`: optional QR artifact metadata for QR link records.
+- `created_at`: ISO 8601 timestamp for PrettySlack record creation.
+- `updated_at`: ISO 8601 timestamp for the last PrettySlack record update.
+- `deleted_at`: ISO 8601 timestamp when PrettySlack marked the record deleted, or `null`.
+
+QR link records may include a `qr_code` object that points to generated QR image artifacts in S3. In AWS terminology, the S3 object path/name inside a bucket is commonly called the object key, so PrettySlack uses `s3_key`.
+
+```json
+{
+  "qr_code": {
+    "s3_bucket": "prettyslack-qr-artifacts",
+    "image_svg": {
+      "s3_key": "qr/2026/CN25_Why_QR.svg",
+      "content_type": "image/svg+xml",
+      "created_at": "2026-04-30T00:05:00Z"
+    },
+    "image_png": {
+      "s3_key": "qr/2026/CN25_Why_QR.png",
+      "content_type": "image/png",
+      "created_at": "2026-04-30T00:05:00Z"
+    },
+    "image_jpeg": {
+      "s3_key": "qr/2026/CN25_Why_QR.jpg",
+      "content_type": "image/jpeg",
+      "created_at": "2026-04-30T00:05:00Z"
+    }
+  }
+}
+```
 
 ## Generated Payload Direction
 
-Given the workflow above and `mode` set to `both`, PrettySlack should produce two payloads:
+Given a workflow with `mode=both`, PrettySlack should produce two PrettyLinks-ready payloads:
 
 - one using `slug=CN25_Why` and a generated `target_url` with `utm_term=URL`
 - one using `slug=CN25_Why_QR` and a generated `target_url` with `utm_term=QR`
 
-The generated payloads should use `target_url`, not `base_target_url`.
-
+PrettyLinks should receive `target_url`. PrettySlack uses `base_target_url` only while generating the final URL.

@@ -1,0 +1,42 @@
+{
+  "link_id": "psl_20260430_cn25_why_qr",
+  "workflow_id": "wf_20260430_cn25_why",
+  "status": "created",
+  "access_method": "QR",
+  "link": {
+    "slug": "CN25_Why_QR",
+    "base_target_url": "https://cng.bio/Alaska2026/",
+    "target_url": "https://cng.bio/Alaska2026/?utm_source=Celebrity_CruiseNight_20250917&utm_medium=event&utm_campaign=TA_Top10_Flyer&utm_term=QR&utm_content=Flyer",
+    "name": "CN25 Why QR",
+    "description": "Celebrity cruise night Top 10 flyer QR",
+    "redirect_type": "307"
+  },
+  "payload": {
+    "utm_source": "Celebrity_CruiseNight_20250917",
+    "utm_medium": "event",
+    "utm_campaign": "TA_Top10_Flyer",
+    "utm_term": "QR",
+    "utm_content": "Flyer"
+  },
+  "qr_code": {
+    "s3_bucket": "prettyslack-qr-artifacts",
+    "image_svg": {
+      "s3_key": "qr/2026/CN25_Why_QR.svg",
+      "content_type": "image/svg+xml",
+      "created_at": "2026-04-30T00:05:00Z"
+    },
+    "image_png": {
+      "s3_key": "qr/2026/CN25_Why_QR.png",
+      "content_type": "image/png",
+      "created_at": "2026-04-30T00:05:00Z"
+    },
+    "image_jpeg": {
+      "s3_key": "qr/2026/CN25_Why_QR.jpg",
+      "content_type": "image/jpeg",
+      "created_at": "2026-04-30T00:05:00Z"
+    }
+  },
+  "created_at": "2026-04-30T00:05:00Z",
+  "updated_at": "2026-04-30T00:05:00Z",
+  "deleted_at": null
+}
