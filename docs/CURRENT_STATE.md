@@ -10,6 +10,8 @@ This file tracks the current working state of the project.
 
 ## Recent Changes
 
+- Removed inherited devcontainer image-source artifacts that are not needed by PrettySlack: `.npmignore`, `manifest.json`, `history/`, and `test-project/`.
+- Updated `README_Original.md` so its `history` link points to the pinned upstream `devcontainers/images:/src/python/history` source instead of the removed local copy.
 - Added the ChatGPT VS Code extension to the devcontainer configuration.
 - Added `AGENTS.md` and project memory docs to support continuity across sessions.
 - Added Codespaces access to the private `Operator_Context` repository.
@@ -25,6 +27,8 @@ This file tracks the current working state of the project.
 - Build the first Python milestone around reading `fixtures/sample_workflow_state.json` and generating `target_url` values.
 - Generate PrettyLinks-ready URL and QR link records matching the sample durable fixtures.
 - Keep live Slack, AWS Lambda, DynamoDB, S3, QR image generation, and WordPress/PrettyLinks writes out of the first code slice.
+- After a useful first PrettySlack code slice is committed, review the remaining inherited devcontainer files for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json`, and `.devcontainer/scripts/install-subversion.sh`.
+- If the remaining devcontainer files are confirmed relevant and inherited cleanup is complete, consider removing `README_Original.md`.
 
 ## Open Questions
 
@@ -32,3 +36,4 @@ This file tracks the current working state of the project.
 - Whether Slack v1 should use slash commands, bot messages in a dedicated channel, or both.
 - Which recent-value fields should be persisted first beyond `utm_source` and `utm_campaign`.
 - Whether recent-value suggestions should live in DynamoDB alongside workflow/link records or remain a separate lightweight state shape.
+- Whether PrettySlack needs Subversion at all; if not, remove `.devcontainer/scripts/install-subversion.sh` and its Dockerfile references during a later devcontainer cleanup.

@@ -59,6 +59,9 @@ This file stores durable, project-specific context that should survive across se
 
 - The devcontainer installs Python, Node, Git, and the ChatGPT VS Code extension.
 - Codespaces is configured to request write access to `MichaelNg2A/Operator_Context` for cross-repository persistent context.
+- Inherited `devcontainers/images:/src/python` artifacts that do not support PrettySlack should be removed after review. Removed so far: `.npmignore`, `manifest.json`, `history/`, and `test-project/`.
+- Remaining inherited devcontainer files should be reviewed later for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json`, and `.devcontainer/scripts/install-subversion.sh`.
+- Cleanup principle: keep the development environment working, but remove unused inherited tools/configuration when doing so will not break current or foreseeable workflows. This reduces repository noise and avoids carrying unnecessary security/update surface.
 - `poppler-utils` may be installed manually in a Codespace when PDF text extraction is needed; it is not currently part of the repo devcontainer definition.
 
 ## Known Constraints

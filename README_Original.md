@@ -41,7 +41,7 @@ You can decide how often you want updates by referencing a [semantic version](ht
 However, we only do security patching on the latest [non-breaking, in support](https://github.com/devcontainers/images/issues/90) versions of images (e.g. `2-3`). 
 You may want to run `apt-get update && apt-get upgrade` in your Dockerfile if you lock to a more specific version to at least pick up OS security updates.
 
-See [history](history) for information on the contents of each version and [here for a complete list of available tags](https://mcr.microsoft.com/v2/devcontainers/python/tags/list).
+See [history](https://github.com/devcontainers/images/tree/d024e0f513e4a9cab9e60c64b3108f0214edac99/src/python/history) for information on the contents of each version and [here for a complete list of available tags](https://mcr.microsoft.com/v2/devcontainers/python/tags/list).
 
 Alternatively, you can use the contents of [.devcontainer](.devcontainer) to fully customize the your container's contents or build for a container architecture the image does not support.
 
@@ -142,4 +142,3 @@ RUN apt-get update && apt-get install --no-install-recommends -yq software-prope
 Copyright (c) Microsoft Corporation. All rights reserved.
 
 Licensed under the MIT License. See [LICENSE](https://github.com/devcontainers/images/blob/main/LICENSE)
-
