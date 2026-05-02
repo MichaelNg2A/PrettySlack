@@ -10,6 +10,8 @@ This file tracks the current working state of the project.
 
 ## Recent Changes
 
+- Added the first `prettyslack/link_builder.py` code slice to build `target_url` values from workflow fixture data.
+- Documented the target URL builder policy in `docs/WORKFLOW_STATE.md`.
 - Removed inherited devcontainer image-source artifacts that are not needed by PrettySlack: `.npmignore`, `manifest.json`, `history/`, and `test-project/`.
 - Updated `README_Original.md` so its `history` link points to the pinned upstream `devcontainers/images:/src/python/history` source instead of the removed local copy.
 - Added the ChatGPT VS Code extension to the devcontainer configuration.
@@ -24,7 +26,7 @@ This file tracks the current working state of the project.
 
 ## Next Steps
 
-- Build the first Python milestone around reading `fixtures/sample_workflow_state.json` and generating `target_url` values.
+- Add focused tests for `prettyslack/link_builder.py`.
 - Generate PrettyLinks-ready URL and QR link records matching the sample durable fixtures.
 - Keep live Slack, AWS Lambda, DynamoDB, S3, QR image generation, and WordPress/PrettyLinks writes out of the first code slice.
 - After a useful first PrettySlack code slice is committed, review the remaining inherited devcontainer files for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json`, and `.devcontainer/scripts/install-subversion.sh`.

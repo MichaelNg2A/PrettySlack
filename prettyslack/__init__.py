@@ -1,0 +1,1 @@
+"""PrettySlack core package."""

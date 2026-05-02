@@ -110,6 +110,8 @@ A link record is PrettySlack's durable record of one individual PrettyLink after
 - `updated_at`: ISO 8601 timestamp for the last PrettySlack record update.
 - `deleted_at`: ISO 8601 timestamp when PrettySlack marked the record deleted, or `null`.
 
+PrettySlack may also use `draft` as a pre-creation status for generated link records that are ready for human review but have not yet been submitted to WordPress/PrettyLinks. Once WordPress/PrettyLinks confirms creation, the durable stored record should use `created`.
+
 QR link records may include a `qr_code` object that points to generated QR image artifacts in S3. In AWS terminology, the S3 object path/name inside a bucket is commonly called the object key, so PrettySlack uses `s3_key`.
 
 ```json
@@ -143,3 +145,38 @@ Given a workflow with `mode=both`, PrettySlack should produce two PrettyLinks-re
 - one using `slug=CN25_Why_QR` and a generated `target_url` with `utm_term=QR`
 
 PrettyLinks should receive `target_url`. PrettySlack uses `base_target_url` only while generating the final URL.
+
+## Target URL Builder Policy
+
+`prettyslack/link_builder.py` is responsible for building a final `target_url` from:
+
+- `base_target_url`
+- `payload`
+- an explicit `utm_term` value supplied by the future workflow/orchestration layer
+
+The builder should stay focused on link construction. It should not create QR image files, call Slack, call DynamoDB, call WordPress, or decide how many variants a workflow should produce.
+
+Current target URL policy:
+
+- Force the output URL scheme to `https`.
+- If the input URL has no scheme, treat it as `https`.
+- Preserve path capitalization.
+- Preserve URL fragments/HTML anchors.
+- Preserve existing non-UTM query parameters.
+- Replace existing UTM query parameters with PrettySlack-generated UTM values.
+- Add a trailing slash for path-like URLs when the path does not look like a file.
+- Use Python standard-library URL helpers instead of manual query-string concatenation.
+
+The current implementation uses:
+
+- `urlsplit` and `urlunsplit` to parse and rebuild structured URL parts.
+- `parse_qsl` to read existing query parameters.
+- `urlencode` to safely encode final query parameters.
+
+`workflow_state["mode"]` is not a valid `utm_term` value. A future workflow/orchestration layer should interpret `mode` and call the link builder with explicit access-method values:
+
+- `mode=typed`: call once with `utm_term=URL`
+- `mode=qr`: call once with `utm_term=QR`
+- `mode=both`: call once with `utm_term=URL` and once with `utm_term=QR`
+
+UTM value normalization, such as converting spaces to underscores while preserving case, should happen before or around workflow-state population unless a later design decision moves that responsibility into the builder.
