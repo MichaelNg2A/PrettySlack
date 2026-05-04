@@ -29,6 +29,16 @@ This file stores durable, project-specific context that should survive across se
 - The initial implementation should make URL/UTM payload generation testable before adding live Slack, AWS, or WordPress/PrettyLinks writes.
 - `prettyslack/link_builder.py` is now a pure importable module for target URL construction; human-runnable sample execution lives in `scripts/build_sample_target_url.py`.
 - The initial local test convention uses Python's built-in `unittest`, currently run with `python3 -m unittest`.
+- Current architecture direction favors small focused modules coordinated inside one application boundary rather than a monolithic all-in-one workflow module.
+- Provisional module boundaries currently look like:
+  - `workflow_orchestrator.py`: Slack-facing workflow progression, readiness checks, and handoff timing.
+  - `link_builder_dispatcher.py`: a thin coordinator that interprets URL/QR/both requests and dispatches the necessary downstream work.
+  - `link_builder.py`: pure target URL construction.
+  - `qr_builder.py`: QR artifact generation.
+  - `prettylinks_client.py`: submission to the supported PrettyLinks integration path and receipt of creation/update status.
+  - `link_record_store.py` or similar: DynamoDB persistence for completed PrettySlack-side records.
+- The dispatcher direction is intentionally thin: it should call focused helpers for URL building, optional QR generation, PrettyLinks submission, and DynamoDB recording, then return a structured result to the workflow orchestrator.
+- Exact module and function names are still provisional and may change as implementation details become clearer.
 - Keep provider boundaries explicit enough to support clean integration seams, but public project docs should focus on supported/public API paths.
 
 ## UTM And Link Conventions
