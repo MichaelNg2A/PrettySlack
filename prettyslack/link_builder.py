@@ -70,15 +70,3 @@ def load_workflow_state(path):
     """Load workflow state from a JSON fixture file."""
     with open(path, "r", encoding="utf-8") as file:
         return json.load(file)
-
-
-if __name__ == "__main__":
-    workflow_state = load_workflow_state("fixtures/sample_workflow_state.json")
-
-    target_url = build_target_url(
-        workflow_state["link"]["base_target_url"],
-        workflow_state["payload"],
-        "URL",
-    )
-
-    print(target_url)

@@ -8,15 +8,19 @@ This repository is intentionally moving in small, reviewable steps. The current 
 
 ## Current Implementation
 
-The first working Python module is in place:
+The first working Python module is in place, along with an initial test/demo spine:
 
 - [prettyslack/link_builder.py](prettyslack/link_builder.py): builds a final `target_url` from `base_target_url`, UTM payload values, and an explicit `utm_term`.
+- [tests/test_link_builder.py](tests/test_link_builder.py): validates the current target URL builder behavior with focused unit tests.
+- [scripts/build_sample_target_url.py](scripts/build_sample_target_url.py): runs the sample workflow fixture through the builder and prints the resulting URL.
 
 At the moment, the code focuses on URL construction only. Slack handling, Lambda entrypoints, DynamoDB reads/writes, QR image generation, and WordPress/PrettyLinks submission are still planned follow-on pieces.
 
 ## Current Shape
 
 - [prettyslack/](prettyslack/): Python package for PrettySlack code.
+- [tests/](tests/): Python unit tests for the current code slices.
+- [scripts/](scripts/): small human-runnable demo/helper scripts.
 - [docs/DESIGN.md](docs/DESIGN.md): product and architecture direction.
 - [docs/WORKFLOW_STATE.md](docs/WORKFLOW_STATE.md): workflow-state and durable link-record shapes.
 - [fixtures/](fixtures/): sample JSON data used to make the data contracts concrete.

@@ -4,13 +4,15 @@ This file tracks the current working state of the project.
 
 ## Current Focus
 
-- Define the first PrettySlack data contracts before writing the first app code.
-- Prepare to implement a small Python builder that reads workflow-state JSON and generates PrettyLinks-ready URL/QR link records.
+- Extend the first PrettySlack code slice around tested URL construction.
+- Prepare to implement generation of PrettyLinks-ready URL/QR draft link records from workflow-state JSON.
 - Keep project-local memory separate from personal cross-project context.
 
 ## Recent Changes
 
 - Added the first `prettyslack/link_builder.py` code slice to build `target_url` values from workflow fixture data.
+- Added `tests/test_link_builder.py` and `tests/__init__.py` so the target URL builder is covered by an initial `unittest` suite.
+- Added `scripts/build_sample_target_url.py` and moved the sample/demo runner out of `prettyslack/link_builder.py` so the module now stays focused on importable logic.
 - Documented the target URL builder policy in `docs/WORKFLOW_STATE.md`.
 - Removed inherited devcontainer image-source artifacts that are not needed by PrettySlack: `.npmignore`, `manifest.json`, `history/`, and `test-project/`.
 - Updated `README_Original.md` so its `history` link points to the pinned upstream `devcontainers/images:/src/python/history` source instead of the removed local copy.
@@ -26,8 +28,8 @@ This file tracks the current working state of the project.
 
 ## Next Steps
 
-- Add focused tests for `prettyslack/link_builder.py`.
-- Generate PrettyLinks-ready URL and QR link records matching the sample durable fixtures.
+- Generate PrettyLinks-ready URL and QR draft link records matching the sample durable fixtures.
+- Decide whether to keep the demo script as a pure sample runner or broaden it into a more general local helper.
 - Keep live Slack, AWS Lambda, DynamoDB, S3, QR image generation, and WordPress/PrettyLinks writes out of the first code slice.
 - After a useful first PrettySlack code slice is committed, review the remaining inherited devcontainer files for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json`, and `.devcontainer/scripts/install-subversion.sh`.
 - If the remaining devcontainer files are confirmed relevant and inherited cleanup is complete, consider removing `README_Original.md`.

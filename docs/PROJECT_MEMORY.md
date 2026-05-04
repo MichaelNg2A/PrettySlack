@@ -27,6 +27,8 @@ This file stores durable, project-specific context that should survive across se
 - PrettySlack should reduce the manual/executive-function burden of provisioning campaign tracking links from Slack.
 - Expected public architecture direction: Slack interaction -> serverless Python service -> link payload generation -> supported PrettyLinks API integration.
 - The initial implementation should make URL/UTM payload generation testable before adding live Slack, AWS, or WordPress/PrettyLinks writes.
+- `prettyslack/link_builder.py` is now a pure importable module for target URL construction; human-runnable sample execution lives in `scripts/build_sample_target_url.py`.
+- The initial local test convention uses Python's built-in `unittest`, currently run with `python3 -m unittest`.
 - Keep provider boundaries explicit enough to support clean integration seams, but public project docs should focus on supported/public API paths.
 
 ## UTM And Link Conventions
