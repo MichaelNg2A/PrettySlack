@@ -146,6 +146,8 @@ Given a workflow with `mode=both`, PrettySlack should produce two PrettyLinks-re
 
 PrettyLinks should receive `target_url`. PrettySlack uses `base_target_url` only while generating the final URL.
 
+Generated QR image artifacts should encode the public PrettyLink URL, not the generated `target_url`. For example, the QR artifact for slug `CN25_Why_QR` should encode `https://cng.bio/CN25_Why_QR`; PrettyLinks then handles redirecting that public URL to the UTM-expanded `target_url`.
+
 ## Target URL Builder Policy
 
 `prettyslack/link_builder.py` is responsible for building a final `target_url` from:
@@ -180,3 +182,25 @@ The current implementation uses:
 - `mode=both`: call once with `utm_term=URL` and once with `utm_term=QR`
 
 UTM value normalization, such as converting spaces to underscores while preserving case, should happen before or around workflow-state population unless a later design decision moves that responsibility into the builder.
+
+## QR Builder Policy
+
+`prettyslack/qr_builder.py` is responsible for building QR image artifacts from:
+
+- the public PrettyLink hostname, such as `cng.bio`
+- the QR PrettyLink slug, such as `CN25_Why_QR`
+- optional requested image formats selected from SVG, PNG, and JPEG
+
+The builder should stay focused on QR artifact construction. It should not call Slack, call DynamoDB, call WordPress/PrettyLinks, upload to S3, decide how many variants a workflow should produce, or create durable link records.
+
+Current QR builder policy:
+
+- Force the encoded PrettyLink URL scheme to `https`.
+- If the PrettyLink hostname has no scheme, treat it as `https`.
+- Strip leading and trailing slashes from the supplied slug before building the encoded PrettyLink URL.
+- Generate SVG, PNG, and JPEG artifacts by default.
+- Keep generated image bytes in memory and return them to the caller.
+- Use a QR raster `box_size` large enough that sample PNG/JPEG artifacts are at least 500 pixels square.
+- Leave S3 bucket/key naming and upload metadata to a separate future upload module.
+
+The current implementation uses the `qrcode[pil]` dependency for QR generation and Python's in-memory `BytesIO` buffers for PNG/JPEG rendering. SVG artifacts are generated with the library's SVG path image factory.

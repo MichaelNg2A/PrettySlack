@@ -2,19 +2,23 @@
 
 PrettySlack is an early-stage workflow automation project for creating PrettyLinks shortened, UTM-tracked campaign links from Slack.
 
-The current design target is a small Python service that can collect link details, generate UTM-tagged destination URLs, prepare typed URL and QR variants, and eventually submit those links to a WordPress/PrettyLinks integration.
+The current design target is a small Python service that can collect link details, generate UTM-tagged destination URLs, prepare typed URL and QR variants, generate QR image artifacts, and eventually submit those links to a WordPress/PrettyLinks integration.
 
-This repository is intentionally moving in small, reviewable steps. The current work is focused on data contracts and fixtures before live Slack, AWS Lambda, DynamoDB, S3, QR image generation, or WordPress writes are added.
+This repository is intentionally moving in small, reviewable steps. The current work is focused on data contracts, fixtures, URL construction, and QR artifact generation before live Slack, AWS Lambda, DynamoDB, S3 uploads, or WordPress writes are added.
 
 ## Current Implementation
 
-The first working Python module is in place, along with an initial test/demo spine:
+The first working Python modules are in place, along with an initial test/demo spine:
 
 - [prettyslack/link_builder.py](prettyslack/link_builder.py): builds a final `target_url` from `base_target_url`, UTM payload values, and an explicit `utm_term`.
+- [prettyslack/qr_builder.py](prettyslack/qr_builder.py): builds the public PrettyLink URL encoded into a QR code and returns SVG, PNG, and JPEG image artifacts in memory.
 - [tests/test_link_builder.py](tests/test_link_builder.py): validates the current target URL builder behavior with focused unit tests.
+- [tests/test_qr_builder.py](tests/test_qr_builder.py): validates QR URL construction, QR image artifact generation, format selection, unsupported formats, and minimum raster output size.
 - [scripts/build_sample_target_url.py](scripts/build_sample_target_url.py): runs the sample workflow fixture through the builder and prints the resulting URL.
+- [scripts/build_sample_qr_artifacts.py](scripts/build_sample_qr_artifacts.py): runs the sample workflow fixture through the QR builder and writes local sample artifacts under `/tmp/prettyslack_sample_qr`.
+- [requirements.txt](requirements.txt): declares the initial QR generation dependency, `qrcode[pil]`.
 
-At the moment, the code focuses on URL construction only. Slack handling, Lambda entrypoints, DynamoDB reads/writes, QR image generation, and WordPress/PrettyLinks submission are still planned follow-on pieces.
+At the moment, the code focuses on URL construction and QR artifact generation only. Slack handling, Lambda entrypoints, DynamoDB reads/writes, S3 uploads, and WordPress/PrettyLinks submission are still planned follow-on pieces.
 
 ## Current Shape
 

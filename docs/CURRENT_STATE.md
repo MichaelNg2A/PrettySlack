@@ -4,7 +4,7 @@ This file tracks the current working state of the project.
 
 ## Current Focus
 
-- Extend the first PrettySlack code slice around tested URL construction.
+- Extend the first PrettySlack code slices around tested URL and QR artifact construction.
 - Prepare to implement generation of PrettyLinks-ready URL/QR draft link records from workflow-state JSON.
 - Keep project-local memory separate from personal cross-project context.
 
@@ -14,6 +14,10 @@ This file tracks the current working state of the project.
 - Added `tests/test_link_builder.py` and `tests/__init__.py` so the target URL builder is covered by an initial `unittest` suite.
 - Added `scripts/build_sample_target_url.py` and moved the sample/demo runner out of `prettyslack/link_builder.py` so the module now stays focused on importable logic.
 - Documented the target URL builder policy in `docs/WORKFLOW_STATE.md`.
+- Added `prettyslack/qr_builder.py` to generate QR image artifacts from a public PrettyLink hostname and QR slug.
+- Added `tests/test_qr_builder.py` so QR URL construction, image artifact generation, format selection, unsupported formats, and minimum raster dimensions are covered by `unittest`.
+- Added `scripts/build_sample_qr_artifacts.py` to write sample QR SVG/PNG/JPEG artifacts under `/tmp/prettyslack_sample_qr`.
+- Added `requirements.txt` with `qrcode[pil]` as the initial QR generation dependency.
 - Removed inherited devcontainer image-source artifacts that are not needed by PrettySlack: `.npmignore`, `manifest.json`, `history/`, and `test-project/`.
 - Updated `README_Original.md` so its `history` link points to the pinned upstream `devcontainers/images:/src/python/history` source instead of the removed local copy.
 - Added the ChatGPT VS Code extension to the devcontainer configuration.
@@ -29,8 +33,8 @@ This file tracks the current working state of the project.
 ## Next Steps
 
 - Generate PrettyLinks-ready URL and QR draft link records matching the sample durable fixtures.
-- Decide whether to keep the demo script as a pure sample runner or broaden it into a more general local helper.
-- Keep live Slack, AWS Lambda, DynamoDB, S3, QR image generation, and WordPress/PrettyLinks writes out of the first code slice.
+- Decide whether to keep the demo scripts as pure sample runners or broaden them into more general local helpers.
+- Keep live Slack, AWS Lambda, DynamoDB, S3 uploads, and WordPress/PrettyLinks writes out of the first builder slices.
 - After a useful first PrettySlack code slice is committed, review the remaining inherited devcontainer files for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json`, and `.devcontainer/scripts/install-subversion.sh`.
 - If the remaining devcontainer files are confirmed relevant and inherited cleanup is complete, consider removing `README_Original.md`.
 
@@ -40,4 +44,5 @@ This file tracks the current working state of the project.
 - Whether Slack v1 should use slash commands, bot messages in a dedicated channel, or both.
 - Which recent-value fields should be persisted first beyond `utm_source` and `utm_campaign`.
 - Whether recent-value suggestions should live in DynamoDB alongside workflow/link records or remain a separate lightweight state shape.
+- Whether QR artifacts should be deleted from S3, retained, or managed through lifecycle rules when PrettySlack records are deleted.
 - Whether PrettySlack needs Subversion at all; if not, remove `.devcontainer/scripts/install-subversion.sh` and its Dockerfile references during a later devcontainer cleanup.

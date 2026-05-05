@@ -28,6 +28,7 @@ This file stores durable, project-specific context that should survive across se
 - Expected public architecture direction: Slack interaction -> serverless Python service -> link payload generation -> supported PrettyLinks API integration.
 - The initial implementation should make URL/UTM payload generation testable before adding live Slack, AWS, or WordPress/PrettyLinks writes.
 - `prettyslack/link_builder.py` is now a pure importable module for target URL construction; human-runnable sample execution lives in `scripts/build_sample_target_url.py`.
+- `prettyslack/qr_builder.py` is now a pure importable module for QR artifact generation; human-runnable sample execution lives in `scripts/build_sample_qr_artifacts.py`.
 - The initial local test convention uses Python's built-in `unittest`, currently run with `python3 -m unittest`.
 - Current architecture direction favors small focused modules coordinated inside one application boundary rather than a monolithic all-in-one workflow module.
 - Provisional module boundaries currently look like:
@@ -63,6 +64,8 @@ This file stores durable, project-specific context that should survive across se
 - Recent-value memory is desirable for fields that are often reused but not globally standardized, especially `utm_source` and `utm_campaign`.
 - RDS is likely overkill for PrettySlack state. DynamoDB is the preferred v1 state store for Slack workflow/session state and durable PrettySlack link records because it is AWS-native, inexpensive at expected scale, and less fragile than shared JSON state in S3.
 - S3 is the preferred storage location for generated QR code image artifacts. DynamoDB records should store S3 bucket/key metadata rather than binary QR image data.
+- QR image artifacts are generated in memory by `qr_builder.py`; a separate future S3 upload module should upload those bytes and produce the durable S3 metadata.
+- QR codes should encode the public PrettyLink URL, such as `https://cng.bio/CN25_Why_QR`, not the UTM-expanded PrettyLinks redirect `target_url`.
 - PrettySlack workflow/link state is documented in `docs/WORKFLOW_STATE.md`.
 - Workflow state uses `mode` for the requested variants (`typed`, `qr`, or `both`). Durable link records represent one actual PrettyLink and use `access_method` (`URL` or `QR`).
 - PrettySlack mirrors PrettyLinks field names where useful, but containers such as `link`, `payload`, and `qr_code` are PrettySlack-owned.
