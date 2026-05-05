@@ -30,6 +30,8 @@ This file stores durable, project-specific context that should survive across se
 - The initial implementation should make URL/UTM payload generation testable before adding live Slack, AWS, or WordPress/PrettyLinks writes.
 - `prettyslack/link_builder.py` is now a pure importable module for target URL construction; human-runnable sample execution lives in `scripts/build_sample_target_url.py`.
 - `prettyslack/qr_builder.py` is now a pure importable module for QR artifact generation; human-runnable sample execution lives in `scripts/build_sample_qr_artifacts.py`.
+- `prettyslack/prettylinks_create_simulator.py` is a temporary local simulator for PrettyLinks create responses. It validates and reflects PrettySlack's narrow create payload without network calls.
+- `prettyslack/prettylinks_client.py` currently exists as a future-facing client boundary and re-exports the create simulator until the real supported PrettyLinks integration is implemented.
 - The initial local test convention uses Python's built-in `unittest`, currently run with `python3 -m unittest`.
 - Current architecture direction favors small focused modules coordinated inside one application boundary rather than a monolithic all-in-one workflow module.
 - Provisional module boundaries currently look like:
@@ -37,7 +39,8 @@ This file stores durable, project-specific context that should survive across se
   - `link_builder_dispatcher.py`: a thin coordinator that interprets URL/QR/both requests and dispatches the necessary downstream work.
   - `link_builder.py`: pure target URL construction.
   - `qr_builder.py`: QR artifact generation.
-  - `prettylinks_client.py`: submission to the supported PrettyLinks integration path and receipt of creation/update status.
+  - `prettylinks_create_simulator.py`: temporary local create-response simulator for downstream development.
+  - `prettylinks_client.py`: eventual submission to the supported PrettyLinks integration path and receipt of lifecycle status.
   - `link_record_store.py` or similar: DynamoDB persistence for completed PrettySlack-side records.
 - The dispatcher direction is intentionally thin: it should call focused helpers for URL building, optional QR generation, PrettyLinks submission, and DynamoDB recording, then return a structured result to the workflow orchestrator.
 - Exact module and function names are still provisional and may change as implementation details become clearer.
@@ -71,6 +74,7 @@ This file stores durable, project-specific context that should survive across se
 - Workflow state uses `mode` for the requested variants (`typed`, `qr`, or `both`). Durable link records represent one actual PrettyLink and use `access_method` (`URL` or `QR`).
 - PrettySlack mirrors PrettyLinks field names where useful, but containers such as `link`, `payload`, and `qr_code` are PrettySlack-owned.
 - PrettySlack's supported PrettyLink field surface is intentionally narrow: `slug`, `target_url`, `name`, `description`, and `redirect_type`.
+- PrettySlack's default redirect type is currently `307`. Supported redirect type values for local create simulation are `301`, `302`, `307`, and `308`.
 
 ## Environment Notes
 

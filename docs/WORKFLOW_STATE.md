@@ -204,3 +204,28 @@ Current QR builder policy:
 - Leave S3 bucket/key naming and upload metadata to a separate future upload module.
 
 The current implementation uses the `qrcode[pil]` dependency for QR generation and Python's in-memory `BytesIO` buffers for PNG/JPEG rendering. SVG artifacts are generated with the library's SVG path image factory.
+
+## PrettyLinks Create Simulator Policy
+
+`prettyslack/prettylinks_create_simulator.py` is a temporary local stand-in for PrettyLinks create responses. It exists to unblock downstream PrettySlack layers before live PrettyLinks integration details are available.
+
+The create simulator should stay focused on reflecting and validating one already-built PrettyLinks-style create payload. It should not build UTM target URLs, decide workflow variants, generate QR image artifacts, call Slack, call DynamoDB, upload to S3, or perform network/API calls.
+
+The supported create payload field surface is intentionally narrow:
+
+- `slug`
+- `target_url`
+- `name`
+- `description`
+- `redirect_type`
+
+The simulator returns a structured success or rejection response. Success includes a deterministic simulated provider id, the public PrettyLink URL, and the reflected create fields. Rejections include structured `field`, `code`, and `message` errors.
+
+`prettyslack/prettylinks_client.py` is currently a future-facing client boundary that re-exports the create simulator. Later dispatcher code may depend on the client boundary while the simulator remains available as a local artifact.
+
+Current redirect-type behavior:
+
+- Default: `307`
+- Accepted values for create simulation: `301`, `302`, `307`, and `308`
+
+QR artifact generation should conceptually happen only after PrettyLinks create confirmation, because QR codes should encode the public PrettyLink URL returned or confirmed by the PrettyLinks-side create step.

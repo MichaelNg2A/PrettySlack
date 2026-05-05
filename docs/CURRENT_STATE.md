@@ -4,8 +4,8 @@ This file tracks the current working state of the project.
 
 ## Current Focus
 
-- Extend the first PrettySlack code slices around tested URL and QR artifact construction.
-- Prepare to implement generation of PrettyLinks-ready URL/QR draft link records from workflow-state JSON.
+- Extend the first PrettySlack code slices around tested URL, QR artifact, and PrettyLinks create-response simulation.
+- Prepare to implement the persistence/store layer and dispatcher that will coordinate URL building, PrettyLinks create confirmation, QR generation, and durable record writing.
 - Keep project-local memory separate from personal cross-project context.
 
 ## Recent Changes
@@ -18,6 +18,11 @@ This file tracks the current working state of the project.
 - Added `tests/test_qr_builder.py` so QR URL construction, image artifact generation, format selection, unsupported formats, and minimum raster dimensions are covered by `unittest`.
 - Added `scripts/build_sample_qr_artifacts.py` to write sample QR SVG/PNG/JPEG artifacts under `/tmp/prettyslack_sample_qr`.
 - Added `requirements.txt` with `qrcode[pil]` as the initial QR generation dependency.
+- Added `prettyslack/prettylinks_create_simulator.py` as a temporary local PrettyLinks create-response simulator.
+- Added `prettyslack/prettylinks_client.py` as a future-facing PrettyLinks client boundary that currently re-exports the create simulator.
+- Added `tests/test_prettylinks_create_simulator.py` to cover simulated create success, defaulting, validation errors, slug collisions, self-redirect rejection, and allowed redirect types.
+- Added `scripts/simulate_prettylinks_create.py` to print a simulated PrettyLinks create response from the sample workflow fixture.
+- Confirmed the supported PrettySlack PrettyLink field surface is intentionally narrow: `slug`, `target_url`, `name`, `description`, and `redirect_type`.
 - Removed inherited devcontainer image-source artifacts that are not needed by PrettySlack: `.npmignore`, `manifest.json`, `history/`, and `test-project/`.
 - Updated `README_Original.md` so its `history` link points to the pinned upstream `devcontainers/images:/src/python/history` source instead of the removed local copy.
 - Added the ChatGPT VS Code extension to the devcontainer configuration.
@@ -32,7 +37,9 @@ This file tracks the current working state of the project.
 
 ## Next Steps
 
-- Generate PrettyLinks-ready URL and QR draft link records matching the sample durable fixtures.
+- Implement a persistence/store layer for durable PrettySlack link records.
+- Implement a thin dispatcher that coordinates URL building, PrettyLinks create simulation/client calls, QR generation after PrettyLinks create confirmation, and record persistence.
+- Generate PrettyLinks-ready URL and QR draft link records matching the sample durable fixtures where that still belongs outside the dispatcher/store work.
 - Decide whether to keep the demo scripts as pure sample runners or broaden them into more general local helpers.
 - Keep live Slack, AWS Lambda, DynamoDB, S3 uploads, and WordPress/PrettyLinks writes out of the first builder slices.
 - After a useful first PrettySlack code slice is committed, review the remaining inherited devcontainer files for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json`, and `.devcontainer/scripts/install-subversion.sh`.
@@ -40,7 +47,8 @@ This file tracks the current working state of the project.
 
 ## Open Questions
 
-- Exact PrettyLinks API payload shape and authentication requirements.
+- Exact live PrettyLinks API authentication and response details.
+- Whether simulated edit/delete responses will be needed before live PrettyLinks API access is available.
 - Whether Slack v1 should use slash commands, bot messages in a dedicated channel, or both.
 - Which recent-value fields should be persisted first beyond `utm_source` and `utm_campaign`.
 - Whether recent-value suggestions should live in DynamoDB alongside workflow/link records or remain a separate lightweight state shape.
