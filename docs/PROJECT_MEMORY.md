@@ -26,6 +26,7 @@ This file stores durable, project-specific context that should survive across se
 
 - PrettySlack should reduce the manual/executive-function burden of provisioning campaign tracking links from Slack.
 - Expected public architecture direction: Slack interaction -> serverless Python service -> link payload generation -> supported PrettyLinks API integration.
+- PrettySlack is intentionally not a full Slack-driven control surface for PrettyLinks. Its scope is the basic PrettyLinks lifecycle that PrettySlack needs: add/create, edit/update, and delete/remove PrettyLink records through the supported integration path.
 - The initial implementation should make URL/UTM payload generation testable before adding live Slack, AWS, or WordPress/PrettyLinks writes.
 - `prettyslack/link_builder.py` is now a pure importable module for target URL construction; human-runnable sample execution lives in `scripts/build_sample_target_url.py`.
 - `prettyslack/qr_builder.py` is now a pure importable module for QR artifact generation; human-runnable sample execution lives in `scripts/build_sample_qr_artifacts.py`.
@@ -69,6 +70,7 @@ This file stores durable, project-specific context that should survive across se
 - PrettySlack workflow/link state is documented in `docs/WORKFLOW_STATE.md`.
 - Workflow state uses `mode` for the requested variants (`typed`, `qr`, or `both`). Durable link records represent one actual PrettyLink and use `access_method` (`URL` or `QR`).
 - PrettySlack mirrors PrettyLinks field names where useful, but containers such as `link`, `payload`, and `qr_code` are PrettySlack-owned.
+- PrettySlack's supported PrettyLink field surface is intentionally narrow: `slug`, `target_url`, `name`, `description`, and `redirect_type`.
 
 ## Environment Notes
 
