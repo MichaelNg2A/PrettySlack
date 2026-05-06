@@ -80,8 +80,9 @@ This file stores durable, project-specific context that should survive across se
 
 - The devcontainer installs Python, Node, Git, and the ChatGPT VS Code extension.
 - Codespaces is configured to request write access to `MichaelNg2A/Operator_Context` for cross-repository persistent context.
-- Inherited `devcontainers/images:/src/python` artifacts that do not support PrettySlack should be removed after review. Removed so far: `.npmignore`, `manifest.json`, `history/`, and `test-project/`.
-- Remaining inherited devcontainer files should be reviewed later for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json`, and `.devcontainer/scripts/install-subversion.sh`.
+- Inherited `devcontainers/images:/src/python` artifacts that do not support PrettySlack should be removed after review. Removed so far: `.npmignore`, `manifest.json`, `history/`, `test-project/`, `.devcontainer/scripts/install-subversion.sh`, and the inherited `setuptools`/`GitPython` pin block in `.devcontainer/Dockerfile`.
+- Remaining inherited devcontainer files should be reviewed later for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, and `.devcontainer/devcontainer-lock.json`.
+- The remaining `.devcontainer/Dockerfile` ImageMagick purge is inherited from `devcontainers/images:/src/python`. On future devcontainer review, check whether `python:3-trixie` still includes ImageMagick and whether the current package still warrants removal for CVE-2019-10131.
 - Cleanup principle: keep the development environment working, but remove unused inherited tools/configuration when doing so will not break current or foreseeable workflows. This reduces repository noise and avoids carrying unnecessary security/update surface.
 - `poppler-utils` may be installed manually in a Codespace when PDF text extraction is needed; it is not currently part of the repo devcontainer definition.
 

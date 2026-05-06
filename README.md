@@ -42,7 +42,3 @@ At the moment, the code focuses on URL construction, QR artifact generation, and
 Codex from OpenAI is being used during development of this repository. Its role is collaborative: proposed changes are reviewed, discussed, and intentionally accepted by a human before they become part of the project.
 
 That means this repo is expected to mature at human review speed, not at raw AI generation speed. The goal is to keep the design understandable, explainable, and maintainable rather than to maximize the volume of generated code.
-
-## Original README
-
-The original README copied from the Python devcontainer image source is preserved at [README_Original.md](README_Original.md).

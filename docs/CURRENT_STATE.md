@@ -24,8 +24,10 @@ This file tracks the current working state of the project.
 - Added `scripts/simulate_prettylinks_create.py` to print a simulated PrettyLinks create response from the sample workflow fixture.
 - Confirmed the supported PrettySlack PrettyLink field surface is intentionally narrow: `slug`, `target_url`, `name`, `description`, and `redirect_type`.
 - Removed inherited devcontainer image-source artifacts that are not needed by PrettySlack: `.npmignore`, `manifest.json`, `history/`, and `test-project/`.
-- Updated `README_Original.md` so its `history` link points to the pinned upstream `devcontainers/images:/src/python/history` source instead of the removed local copy.
+- Removed `README_Original.md` after completing the inherited devcontainer artifact review.
 - Added the ChatGPT VS Code extension to the devcontainer configuration.
+- Removed the inherited Subversion source-build script and its `.devcontainer/Dockerfile` invocation because PrettySlack does not need Subversion and the CVE workaround applied to an unused tool.
+- Removed the inherited `setuptools==78.1.1` and `gitpython==3.1.41` pin block from `.devcontainer/Dockerfile` because PrettySlack does not currently need global `GitPython`, and modern Python packaging does not require a global `setuptools` install for the current dependency set.
 - Added `AGENTS.md` and project memory docs to support continuity across sessions.
 - Added Codespaces access to the private `Operator_Context` repository.
 - Added explicit memory update policy and session-closeout guidance to `AGENTS.md`.
@@ -42,8 +44,8 @@ This file tracks the current working state of the project.
 - Generate PrettyLinks-ready URL and QR draft link records matching the sample durable fixtures where that still belongs outside the dispatcher/store work.
 - Decide whether to keep the demo scripts as pure sample runners or broaden them into more general local helpers.
 - Keep live Slack, AWS Lambda, DynamoDB, S3 uploads, and WordPress/PrettyLinks writes out of the first builder slices.
-- After a useful first PrettySlack code slice is committed, review the remaining inherited devcontainer files for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, `.devcontainer/devcontainer-lock.json`, and `.devcontainer/scripts/install-subversion.sh`.
-- If the remaining devcontainer files are confirmed relevant and inherited cleanup is complete, consider removing `README_Original.md`.
+- After a useful first PrettySlack code slice is committed, review the remaining inherited devcontainer files for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, and `.devcontainer/devcontainer-lock.json`.
+- Re-check whether the remaining `.devcontainer/Dockerfile` ImageMagick purge is still needed: current upstream `python:3-trixie` inherits ImageMagick through `buildpack-deps:trixie`, but this should be revisited as upstream images and Debian packages change.
 
 ## Open Questions
 
@@ -53,4 +55,3 @@ This file tracks the current working state of the project.
 - Which recent-value fields should be persisted first beyond `utm_source` and `utm_campaign`.
 - Whether recent-value suggestions should live in DynamoDB alongside workflow/link records or remain a separate lightweight state shape.
 - Whether QR artifacts should be deleted from S3, retained, or managed through lifecycle rules when PrettySlack records are deleted.
-- Whether PrettySlack needs Subversion at all; if not, remove `.devcontainer/scripts/install-subversion.sh` and its Dockerfile references during a later devcontainer cleanup.
