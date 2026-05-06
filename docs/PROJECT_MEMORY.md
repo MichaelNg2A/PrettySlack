@@ -80,6 +80,7 @@ This file stores durable, project-specific context that should survive across se
 
 - The devcontainer installs Python, Node, Git, and the ChatGPT VS Code extension.
 - Codespaces is configured to request write access to `MichaelNg2A/Operator_Context` for cross-repository persistent context.
+- `.devcontainer/scripts/post-create.sh` uses the Codespaces-granted HTTPS credentials to clone `MichaelNg2A/Operator_Context` into `/workspaces/Operator_Context` after container creation when the repo is accessible and not already present.
 - Inherited `devcontainers/images:/src/python` artifacts that do not support PrettySlack should be removed after review. Removed so far: `.npmignore`, `manifest.json`, `history/`, `test-project/`, `.devcontainer/scripts/install-subversion.sh`, and the inherited `setuptools`/`GitPython` pin block in `.devcontainer/Dockerfile`.
 - Remaining inherited devcontainer files should be reviewed later for relevance: `.devcontainer/Dockerfile`, `.devcontainer/devcontainer.json`, and `.devcontainer/devcontainer-lock.json`.
 - The remaining `.devcontainer/Dockerfile` ImageMagick purge is inherited from `devcontainers/images:/src/python`. On future devcontainer review, check whether `python:3-trixie` still includes ImageMagick and whether the current package still warrants removal for CVE-2019-10131.

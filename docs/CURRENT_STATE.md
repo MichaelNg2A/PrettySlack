@@ -30,6 +30,7 @@ This file tracks the current working state of the project.
 - Removed the inherited `setuptools==78.1.1` and `gitpython==3.1.41` pin block from `.devcontainer/Dockerfile` because PrettySlack does not currently need global `GitPython`, and modern Python packaging does not require a global `setuptools` install for the current dependency set.
 - Added `AGENTS.md` and project memory docs to support continuity across sessions.
 - Added Codespaces access to the private `Operator_Context` repository.
+- Added a devcontainer post-create script to clone `Operator_Context` into `/workspaces/Operator_Context` after Codespaces grants access.
 - Added explicit memory update policy and session-closeout guidance to `AGENTS.md`.
 - Captured initial PrettySlack product direction and UTM conventions in `docs/PROJECT_MEMORY.md`.
 - Added an initial PrettySlack design document in `docs/DESIGN.md`.
